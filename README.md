@@ -1,4 +1,5 @@
-## backend-desafio-03-gostack11
+# Backend das aulas GoStack-11
+
 
 ## Funcionalidades
 - Inserir repositórios na base de dados lógica
@@ -9,7 +10,7 @@
 ## Clone o repositório
 
 - Faça o clone deste repositório usando git clone https://github.com/andrelinos/backend-desafio-03-gostack11.git
-- Entre na pasta do projeto usando cd `Backend das aulas GoStack-11`
+- Entre na pasta do projeto usando cd `backend-desafio-03-gostack11`
 - Rode no terminal o comando yarn para instalar todas as dependência
 - Rode no terminal o comando yarn dev para executar o projejeto
 
