@@ -74,8 +74,9 @@ app.use(express.json());
 
   app.post('/repositories', (req, res) => {
     const { title, owner, url, techs } = req.body;
+   
 
-    const repository = { id: uuid(), title, owner, url, techs:[techs], likes: 0 };
+    const repository = { id: uuid(), title, owner, url, techs: [techs], likes: 0 };
 
     repositories.push(repository);
 
