@@ -44,11 +44,11 @@ app.use(express.json());
     console.timeEnd(logLabel);
   }
 
-  function validaterepositortId(req, res, next) {
+  function validaterepositoryId(req, res, next) {
     const { id } = req.params;
 
     if (!isUuid(id)) {
-      return res.status(400).json( { error: 'Invalid repositort ID.' });
+      return res.status(400).json( { error: 'Invalid repository ID.' });
     }
 
     return next();
@@ -56,7 +56,7 @@ app.use(express.json());
 
   app.use(logRequests);
   app.use(cors());
-  app.use('/repositories/:id', validaterepositortId)
+  app.use('/repositories/:id', validaterepositoryId)
 
   /**
    * req = request
@@ -66,7 +66,7 @@ app.use(express.json());
    const { title } = req.query;
 
    const results = title
-    ? repositories.filter(repositort => repositort.title.includes(title))
+    ? repositories.filter(repository => repository.title.includes(title))
     : repositories;
 
     return res.status(200).json(results);
@@ -75,24 +75,39 @@ app.use(express.json());
   app.post('/repositories', (req, res) => {
     const { title, owner, url, techs } = req.body;
 
-    const repositort = { id: uuid(), title, owner, url, techs };
+    const repository = { id: uuid(), title, owner, url, techs:[techs], likes: 0 };
 
-    repositories.push(repositort);
+    repositories.push(repository);
 
-    return res.json(repositort);
+    return res.json(repository);
   });
+
+  app.post("/repositories/:id/like", (request, response) => {
+  const { id } = request.params;
+
+  const findRepositoryIndex = repositories.findIndex(
+    (respository) => respository.id === id
+  );
+
+  if (findRepositoryIndex === -1)
+    return response.status(400).json({ message: "Repository does not exist" });
+
+  repositories[findRepositoryIndex].likes++;
+
+  return response.json(repositories[findRepositoryIndex]);
+});
 
   app.put('/repositories/:id', (req, res) => {
     const { id } = req.params;
     const { title, owner, url, techs } = req.body;
 
-   const repositortIndex = repositories.findIndex(repositort => repositort.id === id);
+   const repositoryIndex = repositories.findIndex(repository => repository.id === id);
 
-   if (repositortIndex < 0) {
-     return res.status(400).json({ error: 'repositort not found.'});
+   if (repositoryIndex < 0) {
+     return res.status(400).json({ error: 'repository not found.'});
    }
 
-   const repositort = {
+   const repository = {
      id,
      title,
      owner,
@@ -100,21 +115,21 @@ app.use(express.json());
      techs,
    };
 
-   repositories[repositortIndex] = repositort;
+   repositories[repositoryIndex] = repository;
 
-    return res.json(repositort);
+    return res.json(repository);
   });
 
   app.delete('/repositories/:id', (req, res) => {
     const { id } = req.params;
 
-    const repositortIndex = repositories.findIndex(repositort => repositort.id === id);
+    const repositoryIndex = repositories.findIndex(repository => repository.id === id);
 
-   if (repositortIndex < 0) {
-     return res.status(400).json({ error: 'repositort not found.'});
+   if (repositoryIndex < 0) {
+     return res.status(400).json({ error: 'repository not found.'});
    }
 
-   repositories.splice(repositortIndex, 1);
+   repositories.splice(repositoryIndex, 1);
 
     return res.status(204).send();
   });
